@@ -1,6 +1,7 @@
 {
   "name": "aeda-blood-backend",
   "version": "0.1.0",
+  "type": "module",
   "description": "Backend - App de gestión de donaciones de sangre",
   "main": "src/server.js",
   "scripts": {
@@ -9,20 +10,24 @@
     "lint": "eslint . --ext .js",
     "test": "echo \"No tests yet\" && exit 0"
   },
-  "keywords": ["blood", "donation", "backend"],
+  "keywords": [
+    "blood",
+    "donation",
+    "backend"
+  ],
   "author": "Equipo AEDA",
   "license": "MIT",
   "dependencies": {
     "bcrypt": "^5.1.0",
     "dotenv": "^16.0.0",
     "express": "^4.18.2",
+    "joi": "^17.9.2",
     "jsonwebtoken": "^9.0.0",
-    "mssql": "^9.1.1",
-    "uuid": "^9.0.0",
-    "joi": "^17.9.2"
+    "mssql": "^12.1.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22",
-    "eslint": "^8.0.0"
+    "eslint": "^8.0.0",
+    "nodemon": "^3.1.11"
   }
 }
