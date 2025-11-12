@@ -4,7 +4,8 @@ import { generateAccessToken, generateRefreshToken } from '../utils/jwt.js';
 import { v4 as uuidv4 } from 'uuid';
 
 export const register = async (req, res) => {
-  const { email, password, role = 'donor' } = req.body;
+  console.log('Register request body:', req.body);
+  const { email, password, fullName, role = 'donor' } = req.body;
 
   if (!email || !password)
     return res.status(400).json({ message: 'Email and password required' });
@@ -29,10 +30,11 @@ export const register = async (req, res) => {
       .input('id', newId)
       .input('email', email)
       .input('password', hashed)
+      .input('fullName', fullName)
       .input('role', role)
       .query(`
-        INSERT INTO users (id, email, password, role)
-        VALUES (@id, @email, @password, @role)
+        INSERT INTO users (id, email, password_hash, full_name, role)
+        VALUES (@id, @email, @password, @fullName, @role)
       `);
 
     return res.status(201).json({ message: 'User registered successfully' });
@@ -54,13 +56,13 @@ export const login = async (req, res) => {
     const result = await pool
       .request()
       .input('email', email)
-      .query('SELECT id, password, role FROM users WHERE email = @email');
+      .query('SELECT id, password_hash, role FROM users WHERE email = @email');
 
     if (result.recordset.length === 0)
       return res.status(401).json({ message: 'Invalid credentials' });
 
     const user = result.recordset[0];
-    const match = await comparePassword(password, user.password);
+    const match = await comparePassword(password, user.password_hash);
 
     if (!match)
       return res.status(401).json({ message: 'Invalid credentials' });
