@@ -38,6 +38,9 @@ async function seedDatabase() {
         const result = await pool.request().query("SELECT COUNT(*) AS total_users FROM users");
         console.log(`👤 Usuarios insertados: ${result.recordset[0].total_users}`);
 
+        console.log('🔄 Rehasheando contraseñas de usuarios...');
+        await import('./rehashPasswords.js');
+
         console.log('Datos sinteticos insertados correctamente en Azure SQL.');
         await pool.close();
     } catch (err) {

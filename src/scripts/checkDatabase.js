@@ -28,7 +28,7 @@ async function checkDatabase() {
     const pool = await sql.connect(config);
 
     const queries = [
-      "SELECT COUNT(*) AS users FROM users",
+      "SELECT * FROM users",
       "SELECT COUNT(*) AS donors FROM donors",
       "SELECT COUNT(*) AS campaigns FROM campaigns",
       "SELECT COUNT(*) AS appointments FROM appointments",
