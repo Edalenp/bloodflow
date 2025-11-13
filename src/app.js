@@ -5,6 +5,7 @@ import authRoutes from './routes/auth.routes.js';
 import campaignRoutes from './routes/campaign.routes.js';
 import appointmentRoutes from './routes/appointment.routes.js';
 import medicalCheckRoutes from './routes/medicalCheck.routes.js';
+import donationRoutes from './routes/donation.routes.js';
 
 dotenv.config();
 const app = express();
@@ -17,6 +18,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/campaigns', campaignRoutes);
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/medical_checks', medicalCheckRoutes);
+app.use('/api/donations', donationRoutes);
 
 // Health check (to test server)
 app.get('/api/health', async (req, res) => {
