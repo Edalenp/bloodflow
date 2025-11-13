@@ -57,6 +57,7 @@ body {
 }
 
 .button-session {
+  text-decoration: none;
   background-color: #C62828; 
   color: #FFFFFF;
   border: none;

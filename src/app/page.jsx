@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Bell, CalendarDays, Droplet, LineChart, Menu, X } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import ServiceCard from "./components/ServiceCard";
 import "./page.css";
 
@@ -38,7 +39,9 @@ export default function App() {
           </li>
         </ul>
 
-        <button className="button-session">Iniciar Sesión</button>
+        <Link href="/form" className="button-session">
+          Iniciar Sesión
+        </Link>
 
         <div className="menu-icon" onClick={toggleMenu}>
           {isMenuOpen ? (
@@ -68,9 +71,9 @@ export default function App() {
               </a>
             </li>
             <li>
-              <a href="#" onClick={closeMenu}>
+              <Link href="/form" onClick={closeMenu}>
                 Iniciar Sesión
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
