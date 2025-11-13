@@ -7,10 +7,31 @@ import "./form.css";
 
 export default function FormPage() {
   const [isRegister, setIsRegister] = useState(false);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordMatch, setPasswordMatch] = useState(true);
 
-  const toggleForm = () => setIsRegister(!isRegister);
+  const toggleForm = () => {
+    setIsRegister(!isRegister);
+    setPassword("");
+    setConfirmPassword("");
+    setPasswordMatch(true);
+  };
 
-  // Variantes de animación
+  const handlePasswordChange = (e) => {
+    const value = e.target.value;
+    setPassword(value);
+    if (confirmPassword) {
+      setPasswordMatch(value === confirmPassword);
+    }
+  };
+
+  const handleConfirmChange = (e) => {
+    const value = e.target.value;
+    setConfirmPassword(value);
+    setPasswordMatch(value === password);
+  };
+
   const formVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
@@ -19,18 +40,29 @@ export default function FormPage() {
 
   return (
     <div className="form-container">
-      <div className="form-card">
+      <motion.div
+        className="form-card"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+      >
         <h1 className="form-title">
           {isRegister ? "Crear Cuenta" : "Iniciar Sesión"}
         </h1>
         <p className="form-subtitle">
-          {isRegister
-            ? "Completa los siguientes datos para registrarte en "
-            : "Accede a tu cuenta de "}
-          <span className="highlight">LiFlow</span>
+          {isRegister ? (
+            <>
+              Regístrate como <span className="highlight">donante</span> y únete
+              a LiFlow para salvar vidas.
+            </>
+          ) : (
+            <>
+              Accede a tu cuenta de <span className="highlight">LiFlow</span>{" "}
+              para continuar.
+            </>
+          )}
         </p>
 
-        {/* Transición entre Login y Registro */}
         <AnimatePresence mode="wait">
           {!isRegister ? (
             <motion.form
@@ -40,7 +72,7 @@ export default function FormPage() {
               initial="hidden"
               animate="visible"
               exit="exit"
-              transition={{ duration: 0.4, ease: "easeInOut" }}
+              transition={{ duration: 0.4 }}
             >
               <div className="input-group">
                 <label htmlFor="email">Correo electrónico</label>
@@ -81,7 +113,7 @@ export default function FormPage() {
               initial="hidden"
               animate="visible"
               exit="exit"
-              transition={{ duration: 0.4, ease: "easeInOut" }}
+              transition={{ duration: 0.4 }}
             >
               <div className="input-group">
                 <label htmlFor="full_name">Nombre completo</label>
@@ -108,9 +140,27 @@ export default function FormPage() {
                 <input
                   type="password"
                   id="password"
+                  value={password}
+                  onChange={handlePasswordChange}
                   placeholder="P@ssw0rd123"
                   required
                 />
+              </div>
+
+              <div className="input-group">
+                <label htmlFor="confirm_password">Confirmar contraseña</label>
+                <input
+                  type="password"
+                  id="confirm_password"
+                  value={confirmPassword}
+                  onChange={handleConfirmChange}
+                  placeholder="Repite tu contraseña"
+                  required
+                  className={!passwordMatch ? "error" : ""}
+                />
+                {!passwordMatch && (
+                  <p className="error-text">Las contraseñas no coinciden.</p>
+                )}
               </div>
 
               <div className="input-group">
@@ -180,7 +230,7 @@ export default function FormPage() {
         <Link href="/" className="back-home">
           Volver al inicio
         </Link>
-      </div>
+      </motion.div>
     </div>
   );
 }
