@@ -197,6 +197,14 @@
     font-size: 0.9rem;
   }
 
+  .input-group input {
+    width: 90%;
+  }
+
+  .input-group select {
+    width: 90%;
+  }
+
   .form-footer {
     font-size: 0.85rem;
   }
