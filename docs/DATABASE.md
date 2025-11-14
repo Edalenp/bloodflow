@@ -1,4 +1,4 @@
-# 📙 DATABASE.md (Database Schema)
+# 📙 Database Schema
 
 ## Main Tables
 - **users**
