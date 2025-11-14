@@ -1,73 +1,83 @@
 "use client";
 
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 import "./dashboard-medical.css";
 
 export default function MedicalDashboard() {
+  const router = useRouter();
+
+  const goToMedicalChecks = () =>
+    router.push("/dashboard-medical/medical-checks");
+
+  const goToDonations = () => router.push("/dashboard-medical/donations");
+
+  const goToInventory = () => router.push("/dashboard-medical/inventory");
+
+  const logout = () => router.push("/");
+
   return (
-    <div className="medical-dashboard">
-      <aside className="sidebar">
-        <h2 className="sidebar-title">LiFlow</h2>
-
-        <ul className="sidebar-menu">
-          <li className="menu-item active">Resumen</li>
-          <li className="menu-item">Disponibilidad</li>
-          <li className="menu-item">Donantes</li>
-          <li className="menu-item">Campañas</li>
-          <li className="menu-item">Reportes</li>
-        </ul>
-
-        <button className="logout-button">Cerrar sesión</button>
-      </aside>
-
-      <main className="main-panel">
-        <header className="dashboard-header">
-          <h1 className="dashboard-title">
-            Panel del <span className="highlight">Personal Médico</span>
-          </h1>
-          <p className="dashboard-subtitle">
-            Administra campañas, disponibilidad y donantes en tiempo real.
+    <div className="dashboard-container">
+      <div className="dashboard-header">
+        <div className="header-text">
+          <h2>¡Bienvenido, Personal Médico!</h2>
+          <p>
+            Administra evaluaciones previas, registra donaciones completadas y
+            consulta el inventario de sangre del hospital.
           </p>
-        </header>
+        </div>
 
-        <section className="panel-grid">
-          <div className="card urgent-card">
-            <h3>Solicitudes Urgentes</h3>
-            <p className="big-number">3</p>
-            <p className="sub-info">Pacientes esperando transfusión</p>
-          </div>
+        <button className="logout-button" onClick={logout}>
+          Cerrar sesión
+        </button>
+      </div>
 
-          <div className="card availability-card">
-            <h3>Disponibilidad Total</h3>
-            <ul className="blood-stock">
-              <li>O+ — 21 unidades</li>
-              <li>O- — 14 unidades</li>
-              <li>A+ — 18 unidades</li>
-              <li>B+ — 9 unidades</li>
-            </ul>
+      <div className="dashboard-grid">
+        <div className="dashboard-card" onClick={goToMedicalChecks}>
+          <Image
+            src="/medical-evaluation.jpg"
+            width={600}
+            height={400}
+            alt="Evaluaciones Médicas"
+            className="card-image"
+            priority
+          />
+          <div className="card-overlay">
+            <h3>Evaluaciones médicas</h3>
+            <p>Registra la aptitud del donante antes de la extracción.</p>
           </div>
+        </div>
 
-          <div className="card campaigns-card">
-            <h3>Campañas Activas</h3>
-            <p className="big-number">4</p>
-            <button className="action-button">Ver campañas</button>
+        <div className="dashboard-card" onClick={goToDonations}>
+          <Image
+            src="/donation-process.jpg"
+            width={600}
+            height={400}
+            alt="Registrar donación"
+            className="card-image"
+            priority
+          />
+          <div className="card-overlay">
+            <h3>Registrar donación</h3>
+            <p>Confirma la extracción y actualiza el inventario.</p>
           </div>
+        </div>
 
-          <div className="card donors-card">
-            <h3>Últimos Donantes</h3>
-            <ul className="donors-list">
-              <li>Juan Pérez — O+</li>
-              <li>Camila Arango — A-</li>
-              <li>Santiago López — B+</li>
-            </ul>
+        <div className="dashboard-card" onClick={goToInventory}>
+          <Image
+            src="/blood-inventory.webp"
+            width={600}
+            height={400}
+            alt="Inventario"
+            className="card-image"
+            priority
+          />
+          <div className="card-overlay">
+            <h3>Inventario de sangre</h3>
+            <p>Consulta las unidades disponibles por tipo sanguíneo.</p>
           </div>
-
-          <div className="card reports-card">
-            <h3>Generar Reportes</h3>
-            <p className="sub-info">Donaciones, campañas y disponibilidad</p>
-            <button className="action-button">Generar reporte</button>
-          </div>
-        </section>
-      </main>
+        </div>
+      </div>
     </div>
   );
 }
