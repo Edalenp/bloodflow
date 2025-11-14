@@ -1,0 +1,192 @@
+/* GENERAL */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+.checks-container {
+  min-height: 100vh;
+  background: #e5e5e5;
+  padding: 40px 50px;
+}
+
+/* HEADER */
+.checks-header h2 {
+  font-size: 2.3rem;
+  font-weight: 700;
+  color: #2e2e2e;
+  margin-bottom: 10px;
+}
+
+.checks-header p {
+  color: #555;
+  max-width: 600px;
+  font-size: 1.15rem;
+  margin-bottom: 50px;
+}
+
+/* LIST */
+.checks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.check-card {
+  background: white;
+  padding: 25px 30px;
+  border-radius: 14px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  animation: fadeInUp 0.7s ease both;
+}
+
+.check-card h3 {
+  font-size: 1.5rem;
+  color: #2e2e2e;
+}
+
+.campaign {
+  color: #555;
+  margin-top: 4px;
+}
+
+.date {
+  color: #777;
+  font-size: 0.95rem;
+  margin-top: 4px;
+}
+
+/* BUTTON */
+.evaluate-button {
+  background: #1565c0;
+  color: white;
+  padding: 12px 26px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s ease;
+  box-shadow: 0 4px 10px rgba(21, 101, 192, 0.3);
+}
+
+.evaluate-button:hover {
+  background: #0d47a1;
+  transform: translateY(-3px);
+}
+
+/* MODAL */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(3px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-card {
+  background: white;
+  padding: 35px 40px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 500px;
+  animation: fadeInUp 0.4s ease both;
+}
+
+.modal-card h3 {
+  font-size: 1.8rem;
+  margin-bottom: 5px;
+}
+
+.modal-sub {
+  margin-bottom: 25px;
+  color: #444;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.input-group label {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 2px solid #ddd;
+}
+
+textarea {
+  height: 80px;
+  resize: none;
+}
+
+.submit-evaluation {
+  margin-top: 10px;
+  padding: 14px;
+  background: #1565c0;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submit-evaluation:hover {
+  background: #0d47a1;
+}
+
+.close-modal {
+  margin-top: 18px;
+  background: transparent;
+  color: #e53935;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* ANIMATION */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .checks-container {
+    padding: 25px;
+  }
+
+  .check-card {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .evaluate-button {
+    width: 100%;
+  }
+
+  .modal-card {
+    padding: 25px;
+  }
+}
