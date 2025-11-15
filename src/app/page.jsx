@@ -1,148 +1,291 @@
 "use client";
 
 import { useState } from "react";
-import { Bell, CalendarDays, Droplet, LineChart, Menu, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import ServiceCard from "./components/ServiceCard";
+import {
+  Droplet,
+  Droplets,
+  BriefcaseMedical,
+  RotateCw,
+  CalendarDays,
+  Bell,
+  LineChart,
+  Menu,
+  X,
+} from "lucide-react";
+import FeatureCard from "./components/FeatureCard";
+import KPI from "./components/KPI";
 import "./page.css";
 
 export default function App() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-  const closeMenu = () => setIsMenuOpen(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="app">
-      <nav className="nav-bar">
-        <div className="nav-logo">
-          <Droplet size={40} color="#E53935" />
-          <h1 className="nav-title">LiFlow</h1>
+    <div className="landing">
+      <header className="nav">
+        <div className="nav-left">
+          <Link href="/" className="brand">
+            <Droplet size={40} color="#E53935" />
+            <span className="brand-title">LiFlow</span>
+          </Link>
         </div>
 
-        <ul className="nav-links">
-          <li>
-            <a className="nav-link" href="#start">
-              Inicio
-            </a>
-          </li>
-          <li>
-            <a className="nav-link" href="#services">
-              Servicios
-            </a>
-          </li>
-          <li>
-            <a className="nav-link" href="#credits">
-              Créditos
-            </a>
-          </li>
-        </ul>
+        <nav className={`nav-center ${menuOpen ? "open" : ""}`}>
+          <a href="#start">Inicio</a>
+          <a href="#services">Servicios</a>
+          <a href="#why">Por qué</a>
+          <a href="#how">Cómo funciona</a>
+          <a href="#credits">Créditos</a>
+        </nav>
 
-        <Link href="/form" className="button-session">
-          Iniciar Sesión
+        <div className="nav-right">
+          <Link href="/form" className="btn btn-ghost">
+            Iniciar sesión
+          </Link>
+
+          <button
+            className="menu-toggle"
+            onClick={() => setMenuOpen((s) => !s)}
+            aria-label="Abrir menú"
+          >
+            {menuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
+      </header>
+
+      <div className={`mobile-menu-modal ${menuOpen ? "open" : ""}`}>
+        <button
+          className="mobile-menu-close"
+          onClick={() => setMenuOpen(false)}
+          aria-label="Cerrar menú"
+        >
+          <X size={32} />
+        </button>
+
+        <a href="#start" onClick={() => setMenuOpen(false)}>
+          Inicio
+        </a>
+        <a href="#services" onClick={() => setMenuOpen(false)}>
+          Servicios
+        </a>
+        <a href="#why" onClick={() => setMenuOpen(false)}>
+          Por qué
+        </a>
+        <a href="#how" onClick={() => setMenuOpen(false)}>
+          Cómo funciona
+        </a>
+        <a href="#credits" onClick={() => setMenuOpen(false)}>
+          Créditos
+        </a>
+
+        <Link
+          href="/form"
+          className="btn btn-primary"
+          onClick={() => setMenuOpen(false)}
+        >
+          Iniciar sesión
         </Link>
+      </div>
 
-        <div className="menu-icon" onClick={toggleMenu}>
-          {isMenuOpen ? (
-            <X size={32} color="#E53935" />
-          ) : (
-            <Menu size={32} color="#2E2E2E" />
-          )}
-        </div>
-      </nav>
+      <section id="start" className="hero-visual">
+        <div className="hero-left">
+          <h1 className="hero-title">
+            Cuando <span className="accent-red">cada gota</span> importa, LiFlow
+            hace que todo
+            <span className="accent-blue"> funcione</span>.
+          </h1>
 
-      {isMenuOpen && (
-        <div className="menu-modal">
-          <ul className="menu-modal-list">
-            <li>
-              <a href="#start" onClick={closeMenu}>
-                Inicio
-              </a>
-            </li>
-            <li>
-              <a href="#services" onClick={closeMenu}>
-                Servicios
-              </a>
-            </li>
-            <li>
-              <a href="#credits" onClick={closeMenu}>
-                Créditos
-              </a>
-            </li>
-            <li>
-              <Link href="/form" onClick={closeMenu}>
-                Iniciar Sesión
-              </Link>
-            </li>
-          </ul>
-        </div>
-      )}
-
-      <section id="start" className="hero-section">
-        <div className="hero-image-container">
-          <Image
-            className="hero-image"
-            src="/doctors.png"
-            alt="Equipo médico profesional"
-            width={700}
-            height={500}
-            priority
-          />
-        </div>
-        <div className="hero-content">
-          <h2 className="hero-title">
-            Cada <span className="highlight">gota</span> cuenta. LiFlow permite
-            que todo fluya más <span className="highlight-medical">fácil</span>
-          </h2>
-          <p className="hero-subtitle">
-            Una plataforma innovadora que conecta de manera eficiente a{" "}
-            <span className="highlight-medical">donantes</span>,{" "}
-            <span className="highlight-medical">profesionales de salud</span> y{" "}
-            <span className="highlight-medical">centros médicos</span>,
-            facilitando la atención oportuna de pacientes en situación crítica
-            de forma rápida y organizada.
+          <p className="hero-sub">
+            Plataforma visual y colaborativa que conecta donantes, personal
+            médico y centros hospitalarios — agenda, coordina y responde en
+            tiempo real para salvar más vidas.
           </p>
+
+          <div className="hero-ctas">
+            <Link href="/form" className="btn btn-primary">
+              Comienza ahora
+            </Link>
+          </div>
+
+          <div className="hero-kpis">
+            <KPI
+              icon={<Droplets size={22} color="#fff" />}
+              value="+3,500"
+              label="Citas coordinadas"
+              accent="135deg, rgba(229,83,83,0.95), rgba(255,122,122,0.6)"
+            />
+            <KPI
+              icon={<BriefcaseMedical size={22} color="#fff" />}
+              value="+1,200"
+              label="Donantes activos"
+              accent="135deg, rgba(33,150,243,0.95), rgba(66,165,245,0.55)"
+            />
+            <KPI
+              icon={<RotateCw size={22} color="#fff" />}
+              value="Tiempo real"
+              label="Actualizaciones del sistema"
+              accent="135deg, rgba(67,160,71,0.95), rgba(129,199,132,0.45)"
+            />
+          </div>
+        </div>
+
+        <div className="hero-right">
+          <div className="visual-card">
+            <div className="visual-glow" />
+            <Image
+              src="/doctors.png"
+              alt="Equipo médico"
+              width={880}
+              height={640}
+              className="visual-img"
+              priority
+            />
+          </div>
         </div>
       </section>
 
-      <section id="services" className="services-section">
-        <h1 className="services-title">SERVICIOS</h1>
-        <div className="services-cards">
-          <ServiceCard
-            index={0}
-            icon={<Droplet size={26} color="#fff" />}
-            title="Gestión de Donaciones"
-            text="Registra y consulta tus donaciones, revisa tu tipo sanguíneo y conoce cuándo puedes donar nuevamente."
-          />
-          <ServiceCard
-            index={1}
-            icon={<CalendarDays size={26} color="#fff" />}
-            title="Campañas Cercanas"
-            text="Encuentra campañas activas en tu zona, agenda una cita y recibe confirmaciones en tiempo real."
-          />
-          <ServiceCard
-            index={2}
-            icon={<Bell size={26} color="#fff" />}
-            title="Alertas y Recordatorios"
-            text="Recibe notificaciones automáticas cuando tu tipo de sangre sea requerido o tengas una cita próxima."
-          />
-          <ServiceCard
-            index={3}
-            icon={<LineChart size={26} color="#fff" />}
-            title="Reportes y Seguimiento"
-            text="Los médicos y administradores pueden generar reportes de disponibilidad y donantes inscritos."
-          />
+      <section id="services" className="services-split">
+        <div className="services-media">
+          <div className="media-stack">
+            <Image
+              src="/doctor.png"
+              alt="Ilustración features"
+              width={700}
+              height={560}
+              className="features-img"
+            />
+          </div>
+        </div>
+
+        <div className="services-content">
+          <h2 className="section-title">
+            Todo lo que necesitas para gestionar donaciones
+          </h2>
+          <p className="section-sub">
+            Un panel unificado para coordinar campañas, agendar citas, hacer
+            seguimiento clínico y generar reportes en tiempo real.
+          </p>
+
+          <div className="features-list">
+            <FeatureCard
+              icon={<CalendarDays size={20} color="#fff" />}
+              title="Agendamiento inteligente"
+              text="Slots dinámicos, confirmaciones automáticas y recordatorios multicanal."
+              accent="linear-gradient(180deg,#E53935,#FF7B7B)"
+            />
+            <FeatureCard
+              icon={<Bell size={20} color="#fff" />}
+              title="Alertas críticas"
+              text="Notificaciones prioritarias cuando un tipo de sangre es urgente."
+              accent="linear-gradient(180deg,#1565C0,#4DA0FF)"
+            />
+            <FeatureCard
+              icon={<LineChart size={20} color="#fff" />}
+              title="Reportes y stock"
+              text="Dashboard de inventario por tipo de sangre y métricas visuales."
+              accent="linear-gradient(180deg,#43A047,#81C784)"
+            />
+          </div>
         </div>
       </section>
 
-      <footer id="credits" className="credits-section">
-        <h1>Créditos</h1>
-        <div className="authors">
-          <p>Santiago Quintero Pareja</p>
-          <p>Eduardo Alejandro Negrín Pérez</p>
-          <p>Fabián Camilo Quintero Pareja</p>
+      <section id="why" className="why-section">
+        <h2 className="section-title centered">¿Por qué LiFlow?</h2>
+        <p className="section-sub centered">
+          Diseñado por equipos médicos, pensado para salvar vidas.
+        </p>
+
+        <div className="why-grid">
+          <div className="why-item">
+            <div className="why-icon">
+              <Droplet size={22} color="#E53935" />
+            </div>
+            <h4>Confiable</h4>
+            <p>
+              Auditable y conforme a procesos clínicos, con logs y trazabilidad.
+            </p>
+          </div>
+
+          <div className="why-item">
+            <div className="why-icon">
+              <BriefcaseMedical size={22} color="#1565C0" />
+            </div>
+            <h4>Rápido</h4>
+            <p>
+              Menos fricción para donantes, menos tiempo de espera para
+              pacientes.
+            </p>
+          </div>
+
+          <div className="why-item">
+            <div className="why-icon">
+              <LineChart size={22} color="#43A047" />
+            </div>
+            <h4>Inteligente</h4>
+            <p>
+              Decisiones basadas en datos: planificación óptima de jornadas.
+            </p>
+          </div>
+
+          <div className="why-item">
+            <div className="why-icon">
+              <RotateCw size={22} color="#F39C12" />
+            </div>
+            <h4>Automatizable</h4>
+            <p>Escala con workflows y notificaciones programadas.</p>
+          </div>
         </div>
+      </section>
+
+      <section id="how" className="how-section">
+        <h2 className="section-title centered">Cómo funciona</h2>
+        <div className="how-steps">
+          <div className="step">
+            <div className="step-circle">1</div>
+            <h5>Regístrate</h5>
+            <p>Donantes crean perfil y registran su tipo de sangre.</p>
+          </div>
+          <div className="step">
+            <div className="step-circle">2</div>
+            <h5>Agenda</h5>
+            <p>Selecciona campaña y reserva el slot disponible.</p>
+          </div>
+          <div className="step">
+            <div className="step-circle">3</div>
+            <h5>Donar</h5>
+            <p>Registro clínico y seguimiento de la donación.</p>
+          </div>
+          <div className="step">
+            <div className="step-circle">4</div>
+            <h5>Reportes</h5>
+            <p>Inventario y métricas accesibles para el equipo.</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="cta-section">
+        <div className="cta-card">
+          <div>
+            <h3>Listo para mejorar la logística de donación?</h3>
+            <p>Únete a LiFlow y coordina campañas de manera efectiva.</p>
+          </div>
+          <div className="cta-actions">
+            <Link href="/form" className="btn btn-primary large">
+              Comenzar gratis
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <footer id="credits" className="footer">
+        <h2 className="brand small">
+          <Droplet size={30} color="#E53935" />
+          <span className="brand-title">LiFlow</span>
+        </h2>
+        <p className="muted">
+          © {new Date().getFullYear()} LiFlow · Todos los derechos reservados
+        </p>
       </footer>
     </div>
   );
