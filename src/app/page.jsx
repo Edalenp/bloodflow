@@ -27,7 +27,7 @@ export default function App() {
         <div className="nav-left">
           <Link href="/" className="brand">
             <Droplet size={40} color="#E53935" />
-            <span className="brand-title">LiFlow</span>
+            <span className="brand-title">BloodFlow</span>
           </Link>
         </div>
 
@@ -91,8 +91,8 @@ export default function App() {
       <section id="start" className="hero-visual">
         <div className="hero-left">
           <h1 className="hero-title">
-            Cuando <span className="accent-red">cada gota</span> importa, LiFlow
-            hace que todo
+            Cuando <span className="accent-red">cada gota</span> importa,
+            BloodFlow hace que todo
             <span className="accent-blue"> funcione</span>.
           </h1>
 
@@ -171,7 +171,7 @@ export default function App() {
             <FeatureCard
               icon={<CalendarDays size={20} color="#fff" />}
               title="Agendamiento inteligente"
-              text="Slots dinámicos, confirmaciones automáticas y recordatorios multicanal."
+              text="Confirmaciones automáticas y recordatorios multicanal."
               accent="linear-gradient(180deg,#E53935,#FF7B7B)"
             />
             <FeatureCard
@@ -191,7 +191,7 @@ export default function App() {
       </section>
 
       <section id="why" className="why-section">
-        <h2 className="section-title centered">¿Por qué LiFlow?</h2>
+        <h2 className="section-title centered">¿Por qué usar BloodFlow?</h2>
         <p className="section-sub centered">
           Diseñado por equipos médicos, pensado para salvar vidas.
         </p>
@@ -212,10 +212,7 @@ export default function App() {
               <BriefcaseMedical size={22} color="#1565C0" />
             </div>
             <h4>Rápido</h4>
-            <p>
-              Menos fricción para donantes, menos tiempo de espera para
-              pacientes.
-            </p>
+            <p>Menos tiempo de espera para pacientes.</p>
           </div>
 
           <div className="why-item">
@@ -233,7 +230,7 @@ export default function App() {
               <RotateCw size={22} color="#F39C12" />
             </div>
             <h4>Automatizable</h4>
-            <p>Escala con workflows y notificaciones programadas.</p>
+            <p>Escala con flujos de trabajo y notificaciones programadas.</p>
           </div>
         </div>
       </section>
@@ -253,12 +250,12 @@ export default function App() {
           </div>
           <div className="step">
             <div className="step-circle">3</div>
-            <h5>Donar</h5>
+            <h5>Dona</h5>
             <p>Registro clínico y seguimiento de la donación.</p>
           </div>
           <div className="step">
             <div className="step-circle">4</div>
-            <h5>Reportes</h5>
+            <h5>Reporta</h5>
             <p>Inventario y métricas accesibles para el equipo.</p>
           </div>
         </div>
@@ -268,7 +265,7 @@ export default function App() {
         <div className="cta-card">
           <div>
             <h3>Listo para mejorar la logística de donación?</h3>
-            <p>Únete a LiFlow y coordina campañas de manera efectiva.</p>
+            <p>Únete a BloodFlow y coordina campañas de manera efectiva.</p>
           </div>
           <div className="cta-actions">
             <Link href="/form" className="btn btn-primary large">
@@ -281,10 +278,10 @@ export default function App() {
       <footer id="credits" className="footer">
         <h2 className="brand small">
           <Droplet size={30} color="#E53935" />
-          <span className="brand-title">LiFlow</span>
+          <span className="brand-title">BloodFlow</span>
         </h2>
         <p className="muted">
-          © {new Date().getFullYear()} LiFlow · Todos los derechos reservados
+          © {new Date().getFullYear()} BloodFlow · Todos los derechos reservados
         </p>
       </footer>
     </div>

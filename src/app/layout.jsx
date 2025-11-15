@@ -12,9 +12,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Liflow",
+  title: "Bloodflow",
   description:
-    "Liflow es una plataforma que conecta donantes de sangre con hospitales y bancos de sangre. Dona sangre, salva vidas. Únete a nuestra comunidad.",
+    "Bloodflow es una plataforma que conecta donantes de sangre con hospitales y bancos de sangre. Dona sangre, salva vidas. Únete a nuestra comunidad.",
   keywords:
     "donación de sangre, banco de sangre, donantes, salud, emergencias médicas",
 };

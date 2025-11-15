@@ -123,21 +123,21 @@ export default function FormPage() {
           <motion.div key="select-card" className="form-card select-card">
             <h1 className="form-title">Elige tu tipo de acceso</h1>
             <p className="form-subtitle">
-              Selecciona cómo deseas ingresar a LiFlow.
+              Selecciona cómo deseas ingresar a BloodFlow.
             </p>
 
             <button
               className="select-button donor"
               onClick={() => setUserType("donor")}
             >
-              Soy Donante
+              Donante
             </button>
 
             <button
               className="select-button staff"
               onClick={() => setUserType("staff")}
             >
-              Soy Personal Médico
+              Personal Médico
             </button>
 
             <Link href="/" className="back-home">
@@ -160,13 +160,7 @@ export default function FormPage() {
             transition={{ duration: 0.35 }}
           >
             <h1 className="form-title">
-              {isRegister
-                ? userType === "staff"
-                  ? "Crear Cuenta (Personal Médico)"
-                  : "Crear Cuenta (Donante)"
-                : userType === "staff"
-                ? "Iniciar Sesión (Personal Médico)"
-                : "Iniciar Sesión (Donante)"}
+              {isRegister ? "Crear cuenta" : "Iniciar sesión"}
             </h1>
 
             <p className="form-subtitle">
