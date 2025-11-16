@@ -111,7 +111,7 @@ export default function AppointmentsPage() {
                   </div>
 
                   <div className="appt-meta">
-                    <h3 className="appointment-campaign">{appt.campaign}</h3>
+                    <h2 className="appointment-campaign">{appt.campaign}</h2>
                     <p className="appointment-date">
                       {new Date(appt.slot_datetime).toLocaleString("es-ES")}
                     </p>
@@ -142,8 +142,9 @@ export default function AppointmentsPage() {
 
           <form className="schedule-form" onSubmit={handleSchedule}>
             <div className="form-row">
-              <label>Campaña</label>
+              <label htmlFor="campaign-select">Campaña</label>
               <select
+                id="campaign-select"
                 required
                 value={selectedCampaign}
                 onChange={(e) => {
@@ -161,8 +162,9 @@ export default function AppointmentsPage() {
             </div>
 
             <div className="form-row">
-              <label>Horario disponible</label>
+              <label htmlFor="slot-select">Horario disponible</label>
               <select
+                id="slot-select"
                 required
                 value={selectedSlot}
                 onChange={(e) => setSelectedSlot(e.target.value)}
