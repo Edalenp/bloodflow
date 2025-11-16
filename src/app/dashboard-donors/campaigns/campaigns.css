@@ -4,10 +4,6 @@
   font-family: "Poppins", sans-serif;
 }
 
-body {
-  overflow: hidden;
-}
-
 .camp-container {
   min-height: 100vh;
   padding: 50px 60px;

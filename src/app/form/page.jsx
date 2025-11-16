@@ -163,31 +163,6 @@ export default function FormPage() {
               {isRegister ? "Crear cuenta" : "Iniciar sesión"}
             </h1>
 
-            <p className="form-subtitle">
-              {isRegister ? (
-                userType === "staff" ? (
-                  <>
-                    Regístrate como{" "}
-                    <span className="highlight-medical">personal médico</span>.
-                  </>
-                ) : (
-                  <>
-                    Regístrate como <span className="highlight">donante</span>.
-                  </>
-                )
-              ) : userType === "staff" ? (
-                <>
-                  Accede a tu cuenta de{" "}
-                  <span className="highlight-medical">personal médico</span>.
-                </>
-              ) : (
-                <>
-                  Accede a tu cuenta de{" "}
-                  <span className="highlight">donante</span>.
-                </>
-              )}
-            </p>
-
             <AnimatePresence mode="wait">
               {!isRegister ? (
                 <motion.form

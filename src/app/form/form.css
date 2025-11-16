@@ -114,16 +114,6 @@
   line-height: 1.6;
 }
 
-.highlight {
-  color: #C62828;
-  font-weight: 700;
-}
-
-.highlight-medical {
-  color: #1565C0;
-  font-weight: 700;
-}
-
 .input-group {
   display: flex;
   flex-direction: column;
