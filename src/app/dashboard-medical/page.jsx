@@ -44,6 +44,11 @@ export default function MedicalDashboard() {
         </button>
       </header>
 
+      <section className="actions">
+        <h2>Acciones</h2>
+        <p>Selecciona una opción para continuar.</p>
+      </section>
+
       <section className="dashboard-grid" aria-label="Opciones administrativas">
         <motion.div
           className="dashboard-card"

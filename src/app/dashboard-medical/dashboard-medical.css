@@ -72,6 +72,24 @@
   outline-offset: 3px;
 }
 
+.actions {
+  text-align: center;
+  margin-top: 70px;
+  margin-bottom: 35px;
+}
+
+.actions h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 5px;
+}
+
+.actions p {
+  color: #666;
+  font-size: 1.05rem;
+}
+
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
