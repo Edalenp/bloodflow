@@ -5,7 +5,7 @@
 }
 
 .camp-container {
-  min-height: 100vh;
+  min-height: 87vh;
   padding: 50px 60px;
   background: radial-gradient(circle at top right, #ffe5e5 0%, #ffffff 40%, #eef3ff 100%);
 }
