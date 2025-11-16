@@ -201,7 +201,7 @@ export default function App() {
             <div className="why-icon">
               <Droplet size={22} color="#E53935" />
             </div>
-            <h4>Confiable</h4>
+            <h3>Confiable</h3>
             <p>
               Auditable y conforme a procesos clínicos, con logs y trazabilidad.
             </p>
@@ -211,7 +211,7 @@ export default function App() {
             <div className="why-icon">
               <BriefcaseMedical size={22} color="#1565C0" />
             </div>
-            <h4>Rápido</h4>
+            <h3>Rápido</h3>
             <p>Menos tiempo de espera para pacientes.</p>
           </div>
 
@@ -219,7 +219,7 @@ export default function App() {
             <div className="why-icon">
               <LineChart size={22} color="#43A047" />
             </div>
-            <h4>Inteligente</h4>
+            <h3>Inteligente</h3>
             <p>
               Decisiones basadas en datos: planificación óptima de jornadas.
             </p>
@@ -229,7 +229,7 @@ export default function App() {
             <div className="why-icon">
               <RotateCw size={22} color="#F39C12" />
             </div>
-            <h4>Automatizable</h4>
+            <h3>Automatizable</h3>
             <p>Escala con flujos de trabajo y notificaciones programadas.</p>
           </div>
         </div>
@@ -240,22 +240,22 @@ export default function App() {
         <div className="how-steps">
           <div className="step">
             <div className="step-circle">1</div>
-            <h5>Regístrate</h5>
+            <h3>Regístrate</h3>
             <p>Donantes crean perfil y registran su tipo de sangre.</p>
           </div>
           <div className="step">
             <div className="step-circle">2</div>
-            <h5>Agenda</h5>
+            <h3>Agenda</h3>
             <p>Selecciona campaña y reserva el slot disponible.</p>
           </div>
           <div className="step">
             <div className="step-circle">3</div>
-            <h5>Dona</h5>
+            <h3>Dona</h3>
             <p>Registro clínico y seguimiento de la donación.</p>
           </div>
           <div className="step">
             <div className="step-circle">4</div>
-            <h5>Reporta</h5>
+            <h3>Reporta</h3>
             <p>Inventario y métricas accesibles para el equipo.</p>
           </div>
         </div>

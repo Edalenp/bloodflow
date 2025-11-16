@@ -7,7 +7,7 @@ function FeatureCard({ icon, title, text, accent }) {
         </div>
       </div>
       <div className="feature-right">
-        <h4>{title}</h4>
+        <h3>{title}</h3>
         <p>{text}</p>
       </div>
     </div>
