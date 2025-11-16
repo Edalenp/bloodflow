@@ -1,4 +1,3 @@
-/* GENERAL */
 * {
   margin: 0;
   padding: 0;
@@ -6,82 +5,99 @@
   font-family: "Poppins", sans-serif;
 }
 
-.dashboard-container {
+.donor-dashboard-container {
   min-height: 100vh;
-  background: #e5e5e5;
-  padding: 40px 50px;
+  padding: 50px 60px;
+  background: radial-gradient(circle at top right, #ffe5e5 0%, #ffffff 40%, #eef3ff 100%);
 }
 
-/* ---------- HEADER ---------- */
-
-.dashboard-header {
+.donor-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 80px;
-  flex-wrap: wrap;
+  align-items: flex-start;
   gap: 20px;
+  flex-wrap: wrap;
 }
 
-.header-text h2 {
-  font-size: 2.3rem;
-  font-weight: 700;
-  color: #2e2e2e;
-  margin-bottom: 10px;
+.donor-header-text h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #222;
 }
 
-.header-text p {
-  max-width: 500px;
-  color: #555;
+.title-underline {
+  width: 80px;
+  height: 6px;
+  background: #e53935;
+  border-radius: 5px;
+  margin: 10px 0 18px 0;
+}
+
+.donor-header-text p {
   font-size: 1.15rem;
+  max-width: 560px;
+  color: #555;
 }
 
-/* BUTTON */
-.logout-button {
+.logout-btn {
   background: #e53935;
   color: white;
   border: none;
-  padding: 10px 22px;
-  border-radius: 8px;
+  margin: 19px 0;  
+  padding: 12px 26px;
+  border-radius: 40px;
   font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
+  box-shadow: 0 5px 15px rgba(229, 57, 53, 0.25);
   transition: 0.3s ease;
-  box-shadow: 0 4px 12px rgba(229, 57, 53, 0.2);
 }
 
-.logout-button:hover {
+.logout-btn:hover {
   background: #c62828;
-  transform: translateY(-3px);
+  transform: translateY(-2px);
 }
 
-/* ---------- GRID ---------- */
+.actions {
+  text-align: center;
+  margin-top: 70px;
+  margin-bottom: 35px;
+}
 
-.dashboard-grid {
+.actions h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 5px;
+}
+
+.actions p {
+  color: #666;
+  font-size: 1.05rem;
+}
+
+.donor-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 35px;
-  width: 100%;
+  gap: 40px;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
 }
 
-/* ---------- CARDS ---------- */
-
-.dashboard-card {
+.donor-card {
   position: relative;
-  width: 100%;
-  height: 350px;
-  border-radius: 16px;
+  height: 340px;
+  border-radius: 22px;
   overflow: hidden;
   cursor: pointer;
-  transition: 0.35s ease;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
-  animation: fadeInUp 0.7s ease both;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  transition: 0.4s ease;
 }
 
-.dashboard-card:hover {
-  transform: translateY(-5px);
+.donor-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.22);
 }
 
-.card-image {
+.donor-card-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -89,114 +105,174 @@
   transition: 0.4s ease;
 }
 
-.dashboard-card:hover .card-image {
-  filter: brightness(40%);
+.donor-card:hover .donor-card-img {
+  filter: brightness(45%);
   transform: scale(1.05);
 }
 
-/* OVERLAY */
-.card-overlay {
+.donor-card-overlay {
   position: absolute;
-  bottom: 20px;
-  left: 25px;
+  bottom: 30px;
+  left: 35px;
   color: white;
-  animation: slideUp 0.8s ease forwards;
 }
 
-.card-overlay h3 {
-  font-size: 1.9rem;
-  margin-bottom: 5px;
+.donor-card-overlay h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.card-overlay p {
+.icon-inline {
+  font-size: 1.7rem;
+}
+
+.donor-card-overlay p {
   font-size: 1.1rem;
   opacity: 0.9;
+  margin-top: 4px;
 }
 
-/* ANIMATIONS */
+@media (min-width: 1600px) {
+  .donor-dashboard-container {
+    padding: 70px 120px;
+  }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(25px);
+  .donor-header-text h1 {
+    font-size: 3.4rem;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(15px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  .donor-card {
+    height: 380px;
   }
 }
 
-/* ---------- RESPONSIVE TABLET ---------- */
 
-@media (max-width: 900px) {
-  .dashboard-container {
-    padding: 30px;
+@media (max-width: 1599px) {
+  .donor-card {
+    height: 350px;
+  }
+}
+
+
+@media (max-width: 1439px) {
+  .donor-dashboard-container {
+    padding: 45px 50px;
   }
 
-  .header-text h2 {
-    font-size: 2rem;
+  .donor-header-text h1 {
+    font-size: 2.7rem;
   }
 
-  .dashboard-card {
+  .donor-grid {
+    gap: 32px;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  }
+
+  .donor-card {
+    height: 320px;
+  }
+}
+
+
+@media (max-width: 1023px) {
+  .donor-dashboard-container {
+    padding: 35px 40px;
+  }
+
+  .donor-header {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .donor-header-text h1 {
+    font-size: 2.3rem;
+  }
+
+  .title-underline {
+    width: 100%;
+  }
+
+  .quick-actions {
+    text-align: center;
+  }
+
+  .donor-grid {
+    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+    gap: 30px;
+  }
+
+  .donor-card {
     height: 300px;
   }
 }
 
-/* ---------- RESPONSIVE CELULAR ---------- */
 
-@media (max-width: 600px) {
-  .dashboard-container {
-    padding: 20px;
+@media (max-width: 899px) {
+  .donor-dashboard-container {
+    padding: 28px 28px;
   }
 
-  .dashboard-header {
-    flex-direction: column;
-    gap: 10px;
-    text-align: center;
+  .donor-header-text h1 {
+    font-size: 2rem;
   }
 
-  .header-text h2 {
-    font-size: 1.8rem;
-  }
-
-  .header-text p {
-    font-size: 1rem;
-    max-width: 90%;
-    margin: 0 auto;
-  }
-
-  .logout-button {
-    width: 100%;
-    padding: 12px;
-    border-radius: 10px;
-    font-size: 1rem;
-  }
-
-  .dashboard-grid {
+  .donor-grid {
     grid-template-columns: 1fr;
-    gap: 25px;
   }
 
-  .dashboard-card {
-    height: 260px;
+  .donor-card {
+    height: 280px;
   }
 
-  .card-overlay h3 {
-    font-size: 1.6rem;
+  .donor-card-overlay h3 {
+    font-size: 1.7rem;
+  }
+}
+
+
+@media (max-width: 599px) {
+  .donor-dashboard-container {
+    padding: 22px;
   }
 
-  .card-overlay p {
-    font-size: 0.95rem;
+  .donor-header-text h1 {
+    font-size: 1.85rem;
+  }
+
+  .donor-card {
+    height: 250px;
+  }
+
+  .logout-btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 1.05rem;
+    border-radius: 12px;
+  }
+}
+
+
+@media (max-width: 479px) {
+  .donor-dashboard-container {
+    padding: 40px;
+  }
+
+  .donor-header-text h1 {
+    font-size: 1.65rem;
+  }
+
+  .donor-card {
+    height: 220px;
+  }
+
+  .donor-card-overlay h3 {
+    font-size: 1.5rem;
+  }
+
+  .donor-card-overlay p {
+    font-size: 0.85rem;
   }
 }

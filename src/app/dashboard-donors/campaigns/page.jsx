@@ -1,12 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import "./campaigns.css";
 
 export default function CampaignsPage() {
+  const router = useRouter();
   const [selectedCampaign, setSelectedCampaign] = useState(null);
+  const [isExiting, setIsExiting] = useState(false);
 
-  // Esta sería la data que luego vendrá del backend
   const campaigns = [
     {
       id: "camp_001",
@@ -50,72 +53,151 @@ export default function CampaignsPage() {
         { slot_datetime: "2025-11-20T11:00:00Z", available: true },
       ],
     },
+    {
+      id: "camp_004",
+      title: "Jornada en Universidad Tecnológica",
+      location: "UTB - Campus Norte",
+      start_date: "2025-11-25T08:30:00Z",
+      end_date: "2025-11-25T14:30:00Z",
+      capacity_total: 60,
+      capacity_available: 5,
+      description: "Campaña abierta a toda la comunidad.",
+      slots: [
+        { slot_datetime: "2025-11-20T09:00:00Z", available: true },
+        { slot_datetime: "2025-11-20T11:00:00Z", available: true },
+      ],
+    },
+    {
+      id: "camp_005",
+      title: "Jornada en Universidad Tecnológica",
+      location: "UTB - Campus Norte",
+      start_date: "2025-11-25T08:30:00Z",
+      end_date: "2025-11-25T14:30:00Z",
+      capacity_total: 60,
+      capacity_available: 5,
+      description: "Campaña abierta a toda la comunidad.",
+      slots: [
+        { slot_datetime: "2025-11-20T09:00:00Z", available: true },
+        { slot_datetime: "2025-11-20T11:00:00Z", available: true },
+      ],
+    },
+    {
+      id: "camp_006",
+      title: "Jornada en Universidad Tecnológica",
+      location: "UTB - Campus Norte",
+      start_date: "2025-11-25T08:30:00Z",
+      end_date: "2025-11-25T14:30:00Z",
+      capacity_total: 60,
+      capacity_available: 5,
+      description: "Campaña abierta a toda la comunidad.",
+      slots: [
+        { slot_datetime: "2025-11-20T09:00:00Z", available: true },
+        { slot_datetime: "2025-11-20T11:00:00Z", available: true },
+      ],
+    },
   ];
 
+  const goToAppointments = () => {
+    setIsExiting(true);
+    setTimeout(() => router.push("/dashboard-donors/appointments"), 350);
+  };
+
   return (
-    <div className="campaigns-container">
-      <h1 className="campaigns-title">Campañas Activas</h1>
-      <p className="campaigns-subtitle">
-        Encuentra campañas disponibles y elige un horario para donar.
-      </p>
-
-      <div className="campaigns-grid">
-        {campaigns.map((camp) => (
-          <div key={camp.id} className="campaign-card">
-            <h3 className="campaign-card-title">{camp.title}</h3>
-            <p className="campaign-card-location">{camp.location}</p>
-
-            <div className="capacity-box">
-              <span>Total: {camp.capacity_total}</span>
-              <span>Disponibles: {camp.capacity_available}</span>
-            </div>
-
-            <button
-              className="details-button"
-              onClick={() => setSelectedCampaign(camp)}
-            >
-              Ver detalles
-            </button>
-          </div>
-        ))}
-      </div>
-
-      {selectedCampaign && (
-        <div
-          className="side-panel-overlay"
-          onClick={() => setSelectedCampaign(null)}
+    <AnimatePresence mode="wait">
+      {!isExiting && (
+        <motion.div
+          key="campaigns-page"
+          initial={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 15 }}
+          transition={{ duration: 0.35, ease: "easeInOut" }}
+          className="camp-container"
         >
-          <div className="side-panel" onClick={(e) => e.stopPropagation()}>
-            <button
-              className="close-panel"
+          <div className="camp-header">
+            <h1>Campañas Activas</h1>
+            <p>Encuentra campañas disponibles y elige un horario para donar.</p>
+          </div>
+
+          <div className="camp-grid">
+            {campaigns.map((camp) => (
+              <div key={camp.id} className="camp-card">
+                <div className="camp-title-row">
+                  <svg
+                    className="camp-icon"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#e53935"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M12 2C8 6 5 9.5 5 13a7 7 0 0 0 14 0c0-3.5-3-7-7-11z" />
+                  </svg>
+
+                  <h2>{camp.title}</h2>
+                </div>
+
+                <p className="location">{camp.location}</p>
+
+                <div className="capacity">
+                  <span>Total: {camp.capacity_total}</span>
+                  <span>Disponibles: {camp.capacity_available}</span>
+                </div>
+
+                <button
+                  className="camp-btn"
+                  onClick={() => setSelectedCampaign(camp)}
+                >
+                  Ver detalles
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {selectedCampaign && (
+            <div
+              className="panel-overlay"
               onClick={() => setSelectedCampaign(null)}
             >
-              ✕
-            </button>
-
-            <h2 className="panel-title">{selectedCampaign.title}</h2>
-            <p className="panel-location">{selectedCampaign.location}</p>
-            <p className="panel-description">{selectedCampaign.description}</p>
-
-            <h3 className="panel-subtitle">Horarios disponibles</h3>
-
-            <div className="slots-list">
-              {selectedCampaign.slots.map((slot, i) => (
-                <div
-                  key={i}
-                  className={`slot-item ${
-                    slot.available ? "available" : "unavailable"
-                  }`}
+              <div className="panel" onClick={(e) => e.stopPropagation()}>
+                <button
+                  className="close-btn"
+                  onClick={() => setSelectedCampaign(null)}
                 >
-                  {new Date(slot.slot_datetime).toLocaleString("es-ES")}
-                </div>
-              ))}
-            </div>
+                  ✕
+                </button>
 
-            <button className="schedule-button">Agendar</button>
-          </div>
-        </div>
+                <h2 className="panel-title">{selectedCampaign.title}</h2>
+                <p className="panel-location">{selectedCampaign.location}</p>
+                <p className="panel-description">
+                  {selectedCampaign.description}
+                </p>
+
+                <h3 className="panel-subtitle">Horarios disponibles</h3>
+
+                <div className="slot-list">
+                  {selectedCampaign.slots.map((slot, i) => (
+                    <div
+                      key={i}
+                      className={`slot ${slot.available ? "free" : "taken"}`}
+                    >
+                      {new Date(slot.slot_datetime).toLocaleString("es-ES")}
+                    </div>
+                  ))}
+                </div>
+
+                <button
+                  className="panel-schedule-btn"
+                  onClick={goToAppointments}
+                >
+                  Agendar
+                </button>
+              </div>
+            </div>
+          )}
+        </motion.div>
       )}
-    </div>
+    </AnimatePresence>
   );
 }
