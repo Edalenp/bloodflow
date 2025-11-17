@@ -18,7 +18,7 @@ mv cloudflared ~/bin/
 # Iniciar servidor node en background
 cd src
 nohup npm run dev > servicio-node.log 2>&1 &
-sleep 5
+sleep 15
 
 # INICIAR TÚNEL TEMPORAL
 ~/bin/cloudflared tunnel --url http://localhost:4000
