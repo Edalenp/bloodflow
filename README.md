@@ -1,36 +1,136 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BloodFlow - Sistema de Gestión de Donaciones de Sangre
 
-## Getting Started
+Una aplicación completa para gestionar campañas de donación de sangre, citas y seguimiento de donantes.
 
-First, run the development server:
+## Características
 
-```bash
+- **Portal de Donantes**: Ver campañas activas y agendar citas
+- **Portal Médico**: Gestionar citas y registros de donación
+- **Panel Administrativo**: Supervisar todas las operaciones
+
+## Configuración del Backend
+
+Este proyecto requiere un backend que implemente el contrato de API especificado. Los endpoints disponibles son:
+
+### Autenticación
+- `POST /api/auth/register` - Registro de usuarios
+- `POST /api/auth/login` - Inicio de sesión
+
+### Campañas
+- `GET /api/campaigns` - Listar campañas
+- `GET /api/campaigns/{id}` - Detalle de campaña con slots
+
+### Citas
+- `POST /api/appointments` - Reservar cita
+- `GET /api/appointments/me` - Mis citas
+
+### Médico
+- `POST /api/medical_checks` - Registrar evaluación médica
+- `POST /api/donations` - Registrar donación y actualizar inventario
+- `GET /api/inventory` - Consultar inventario de sangre
+
+### Notificaciones
+- `POST /api/notifications/send` - Enviar notificación
+
+## Variables de Entorno
+
+Crea un archivo `.env.local` basado en `.env.example`:
+
+\`\`\`bash
+# Backend API URL - URL base para todos los endpoints de la API
+NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
+\`\`\`
+
+## Estructura del Proyecto
+
+\`\`\`
+bloodflow/
+├── app/                    # Páginas y rutas (Next.js App Router)
+│   ├── donor/             # Rutas para donantes
+│   ├── medical/           # Rutas para personal médico
+│   └── admin/             # Rutas para administradores
+├── components/            # Componentes reutilizables
+│   └── ui/               # Componentes base de UI (shadcn)
+├── lib/                  # Utilidades y contextos
+│   ├── api.ts            # Cliente API con integración al backend
+│   ├── auth-context.tsx  # Contexto de autenticación con JWT
+│   └── utils.ts          # Funciones helper
+├── hooks/                # Custom hooks
+├── types/                # Definiciones de TypeScript
+└── public/               # Archivos estáticos
+\`\`\`
+
+## Instalación
+
+\`\`\`bash
+# Instalar dependencias
+npm install
+
+# Configurar variables de entorno
+cp .env.example .env.local
+
+# Ejecutar en desarrollo
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+# Build para producción
+npm run build
+npm start
+\`\`\`
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Tecnologías
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Next.js 16 (App Router)
+- React 19
+- TypeScript
+- Tailwind CSS v4
+- shadcn/ui
+- JWT Authentication
 
-## Learn More
+## Cliente API
 
-To learn more about Next.js, take a look at the following resources:
+El cliente API (`lib/api.ts`) está configurado para usar la variable de entorno `NEXT_PUBLIC_BACKEND_URL`. Todos los endpoints siguen el contrato especificado y manejan automáticamente:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Inyección de tokens JWT en headers
+- Manejo de errores con mensajes descriptivos
+- Tipos TypeScript completos
+- Formato de peticiones y respuestas según el contrato
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Ejemplo de uso:
 
-## Deploy on Vercel
+\`\`\`typescript
+import { api } from '@/lib/api'
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+// Login
+const response = await api.auth.login(email, password)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+// Listar campañas
+const campaigns = await api.campaigns.list()
+
+// Reservar cita
+await api.appointments.create({
+  campaign_id: "camp_001",
+  slot_datetime: "2025-11-15T09:00:00Z"
+})
+\`\`\`
+
+## Diseño Responsive
+
+Todos los componentes son completamente responsive y optimizados para:
+- Móvil (< 640px)
+- Tablet (640px - 1024px)
+- Desktop (> 1024px)
+
+Se utilizan breakpoints de Tailwind CSS (`sm:`, `md:`, `lg:`, `xl:`) para garantizar una experiencia óptima en todos los dispositivos.
+
+## Desarrollo
+
+El proyecto sigue las mejores prácticas de:
+- Componentes modulares y reutilizables
+- Type safety con TypeScript
+- Accesibilidad (ARIA, semantic HTML)
+- Performance (React Server Components)
+- SEO optimizado
+
+## Licencia
+
+MIT
