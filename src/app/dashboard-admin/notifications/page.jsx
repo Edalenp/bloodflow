@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import "./notifications.css";
 
 export default function SendNotificationPage() {
@@ -16,30 +17,52 @@ export default function SendNotificationPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    setStatusMessage({
+      type: "success",
+      text: "Notificación programada correctamente.",
+    });
+
     setTimeout(() => {
-      setStatusMessage({
-        type: "success",
-        text: "Notificación programada correctamente.",
-      });
-    }, 700);
+      setStatusMessage(null);
+    }, 2000);
   };
 
   return (
-    <div className="notifications-page">
-      <h1 className="notifications-title">Enviar Notificación</h1>
+    <main
+      className="notifications-page"
+      role="main"
+      aria-labelledby="notifications-title"
+    >
+      <h1 id="notifications-title" className="notifications-title" tabIndex="0">
+        Enviar Notificación
+      </h1>
 
-      {statusMessage && (
-        <div
-          className={`status-message ${
-            statusMessage.type === "success" ? "success" : "error"
-          }`}
-        >
-          {statusMessage.text}
-        </div>
-      )}
+      <AnimatePresence>
+        {statusMessage && (
+          <motion.div
+            key="status"
+            className={`status-message ${
+              statusMessage.type === "success" ? "success" : "error"
+            }`}
+            role="alert"
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.35 }}
+          >
+            {statusMessage.text}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      <div className="notifications-card">
-        <form onSubmit={handleSubmit} className="notification-form">
+      <motion.section
+        className="notifications-card"
+        aria-label="Formulario para enviar notificaciones"
+        initial={{ opacity: 0, y: 18 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45 }}
+      >
+        <form onSubmit={handleSubmit} className="notification-form" noValidate>
           <div className="input-group">
             <label htmlFor="user_id">ID del usuario</label>
             <input
@@ -51,6 +74,7 @@ export default function SendNotificationPage() {
               onChange={(e) =>
                 setFormData({ ...formData, user_id: e.target.value })
               }
+              aria-required="true"
             />
           </div>
 
@@ -62,6 +86,7 @@ export default function SendNotificationPage() {
               onChange={(e) =>
                 setFormData({ ...formData, type: e.target.value })
               }
+              aria-required="true"
             >
               <option value="email">Correo electrónico</option>
               <option value="sms">SMS</option>
@@ -80,6 +105,7 @@ export default function SendNotificationPage() {
               onChange={(e) =>
                 setFormData({ ...formData, subject: e.target.value })
               }
+              aria-required="true"
             />
           </div>
 
@@ -94,6 +120,7 @@ export default function SendNotificationPage() {
               onChange={(e) =>
                 setFormData({ ...formData, body: e.target.value })
               }
+              aria-required="true"
             ></textarea>
           </div>
 
@@ -101,7 +128,7 @@ export default function SendNotificationPage() {
             Enviar notificación
           </button>
         </form>
-      </div>
-    </div>
+      </motion.section>
+    </main>
   );
 }
