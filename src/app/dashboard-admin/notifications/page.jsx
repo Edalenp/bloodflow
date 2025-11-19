@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import "./notifications.css";
+import { sendNotification } from "../../lib/notifications";
 
 export default function SendNotificationPage() {
   const [formData, setFormData] = useState({
@@ -13,18 +14,71 @@ export default function SendNotificationPage() {
   });
 
   const [statusMessage, setStatusMessage] = useState(null);
+  const [isSending, setIsSending] = useState(false);
+  const [errors, setErrors] = useState({});
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      setStatusMessage({
+        type: "error",
+        text: "Por favor, completa todos los campos requeridos.",
+      });
+      return;
+    }
 
-    setStatusMessage({
-      type: "success",
-      text: "Notificación programada correctamente.",
-    });
+    setIsSending(true);
+    setStatusMessage(null);
 
-    setTimeout(() => {
-      setStatusMessage(null);
-    }, 2000);
+    try {
+      await sendNotification(formData);
+
+      setStatusMessage({
+        type: "success",
+        text: "Notificación programada correctamente.",
+      });
+
+      // Limpiar formulario después del éxito
+      setFormData({
+        user_id: "",
+        type: "email",
+        subject: "",
+        body: "",
+      });
+      setErrors({});
+
+      setTimeout(() => {
+        setStatusMessage(null);
+      }, 2000);
+    } catch (err) {
+      console.error("Error sending notification:", err);
+      setStatusMessage({
+        type: "error",
+        text: err.message || "Error al enviar la notificación. Intenta nuevamente.",
+      });
+    } finally {
+      setIsSending(false);
+    }
+  };
+  
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.user_id.trim()) {
+      newErrors.user_id = "El ID del usuario es requerido.";
+    }
+    
+    if (!formData.subject.trim()) {
+      newErrors.subject = "El asunto es requerido.";
+    }
+    
+    if (!formData.body.trim()) {
+      newErrors.body = "El mensaje es requerido.";
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   return (
@@ -71,11 +125,17 @@ export default function SendNotificationPage() {
               placeholder="Ej: user_83ab1"
               required
               value={formData.user_id}
-              onChange={(e) =>
-                setFormData({ ...formData, user_id: e.target.value })
-              }
+              onChange={(e) => {
+                setFormData({ ...formData, user_id: e.target.value });
+                setErrors({ ...errors, user_id: "" });
+              }}
               aria-required="true"
+              aria-invalid={!!errors.user_id}
+              disabled={isSending}
             />
+            {errors.user_id && (
+              <p className="error-text">{errors.user_id}</p>
+            )}
           </div>
 
           <div className="input-group">
@@ -87,6 +147,7 @@ export default function SendNotificationPage() {
                 setFormData({ ...formData, type: e.target.value })
               }
               aria-required="true"
+              disabled={isSending}
             >
               <option value="email">Correo electrónico</option>
               <option value="sms">SMS</option>
@@ -102,11 +163,17 @@ export default function SendNotificationPage() {
               placeholder="Recordatorio de Cita"
               required
               value={formData.subject}
-              onChange={(e) =>
-                setFormData({ ...formData, subject: e.target.value })
-              }
+              onChange={(e) => {
+                setFormData({ ...formData, subject: e.target.value });
+                setErrors({ ...errors, subject: "" });
+              }}
               aria-required="true"
+              aria-invalid={!!errors.subject}
+              disabled={isSending}
             />
+            {errors.subject && (
+              <p className="error-text">{errors.subject}</p>
+            )}
           </div>
 
           <div className="input-group">
@@ -117,15 +184,25 @@ export default function SendNotificationPage() {
               placeholder="Escribe el mensaje que se enviará al usuario..."
               required
               value={formData.body}
-              onChange={(e) =>
-                setFormData({ ...formData, body: e.target.value })
-              }
+              onChange={(e) => {
+                setFormData({ ...formData, body: e.target.value });
+                setErrors({ ...errors, body: "" });
+              }}
               aria-required="true"
+              aria-invalid={!!errors.body}
+              disabled={isSending}
             ></textarea>
+            {errors.body && (
+              <p className="error-text">{errors.body}</p>
+            )}
           </div>
 
-          <button type="submit" className="send-button">
-            Enviar notificación
+          <button 
+            type="submit" 
+            className="send-button"
+            disabled={isSending}
+          >
+            {isSending ? "Enviando..." : "Enviar notificación"}
           </button>
         </form>
       </motion.section>

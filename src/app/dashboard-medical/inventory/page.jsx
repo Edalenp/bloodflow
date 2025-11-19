@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
 import { motion } from "framer-motion";
 import "./inventory.css";
+import { getInventory } from "../../lib/inventory";
 
 export default function InventoryPage() {
   const canvasRef = useRef(null);
@@ -11,8 +12,10 @@ export default function InventoryPage() {
 
   const [inventoryData, setInventoryData] = useState([]);
   const [lastUpdated, setLastUpdated] = useState(null);
+  const [error, setError] = useState("");
 
   // Simulación de API
+  /*
   useEffect(() => {
     let isMounted = true;
 
@@ -34,6 +37,34 @@ export default function InventoryPage() {
     };
 
     loadMockData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+  */
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchInventory = async () => {
+      try {
+        const response = await getInventory();
+
+        if (isMounted) {
+          setInventoryData(response.data || []);
+          setLastUpdated(response.last_updated);
+          setError("");
+        }
+      } catch (err) {
+        console.error("Error loading inventory:", err);
+        if (isMounted) {
+          setError("Error al cargar el inventario. Intenta nuevamente.");
+        }
+      }
+    };
+
+    fetchInventory();
 
     return () => {
       isMounted = false;
@@ -137,7 +168,11 @@ export default function InventoryPage() {
             registran nuevas donaciones.
           </p>
         </header>
-
+        {error && (
+          <div className="error-banner" role="alert">
+            {error}
+          </div>
+        )}
         <section
           className="inventory-cards-row"
           aria-label="Resumen de unidades por tipo"

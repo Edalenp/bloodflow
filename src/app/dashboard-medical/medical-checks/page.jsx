@@ -3,11 +3,15 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import "./medical-checks.css";
+import { createMedicalCheck, getPendingMedicalChecks } from "../../lib/medicalChecks";
 
 export default function MedicalChecksPage() {
   const [openModal, setOpenModal] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState("");
 
   const [fields, setFields] = useState({
     bp: "",
@@ -22,6 +26,7 @@ export default function MedicalChecksPage() {
   const firstFieldRef = useRef(null);
   const modalRef = useRef(null);
 
+  /*
   const [appointments, setAppointments] = useState([
     {
       id: "appt_203",
@@ -36,6 +41,25 @@ export default function MedicalChecksPage() {
       datetime: "2025-11-22T10:00:00Z",
     },
   ]);
+  */
+
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        setIsLoading(true);
+        const data = await getPendingMedicalChecks();
+        setAppointments(data || []);
+        setError("");
+      } catch (err) {
+        console.error("Error loading appointments:", err);
+        setError("Error al cargar las citas. Intenta nuevamente.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAppointments();
+  }, []);
 
   const openEvaluation = (appt) => {
     setSelectedAppointment(appt);
@@ -54,6 +78,49 @@ export default function MedicalChecksPage() {
   const closeEvaluation = () => {
     setOpenModal(false);
     setSelectedAppointment(null);
+  };
+
+  const saveEvaluation = async () => {
+    if (!validate()) return;
+    
+    setIsSaving(true);
+    setError("");
+
+    try {
+      // Preparar los datos según el formato que espera el backend
+      const checkData = {
+        appointment_id: selectedAppointment.id,
+        answers: {
+          has_cold: fields.cold === "true",
+          recent_surgery: fields.surgery === "true",
+        },
+        vitals: {
+          blood_pressure: fields.bp,
+          weight: parseFloat(fields.weight),
+        },
+        apto: fields.apt === "true",
+        reason_not_apto: fields.apt === "false" ? fields.observ : null,
+      };
+
+      await createMedicalCheck(checkData);
+
+      // Remover de la lista local
+      setAppointments((prev) =>
+        prev.filter((a) => a.id !== selectedAppointment.id)
+      );
+
+      setSuccessModal(true);
+
+      setTimeout(() => {
+        setSuccessModal(false);
+        closeEvaluation();
+      }, 1600);
+    } catch (err) {
+      console.error("Error saving evaluation:", err);
+      setError(err.message || "Error al guardar la evaluación. Intenta nuevamente.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // CERRAR CON ESCAPE
@@ -90,21 +157,6 @@ export default function MedicalChecksPage() {
     setErrors((prev) => ({ ...prev, [key]: "" }));
   };
 
-  const saveEvaluation = () => {
-    if (!validate()) return;
-
-    setAppointments((prev) =>
-      prev.filter((a) => a.id !== selectedAppointment.id)
-    );
-
-    setSuccessModal(true);
-
-    setTimeout(() => {
-      setSuccessModal(false);
-      closeEvaluation();
-    }, 1600);
-  };
-
   return (
     <motion.main
       className="checks-container"
@@ -123,7 +175,17 @@ export default function MedicalChecksPage() {
           requieren una revisión médica previa.
         </p>
       </header>
+      {error && (
+        <div className="error-banner" role="alert">
+          {error}
+        </div>
+      )}
 
+      {isLoading && (
+        <div className="loading-state">
+          Cargando evaluaciones...
+        </div>
+      )}
       <section
         className="checks-list"
         aria-label="Citas pendientes de evaluación"
@@ -289,11 +351,11 @@ export default function MedicalChecksPage() {
                 <button
                   type="button"
                   className="submit-evaluation"
-                  disabled={!fields.bp || !fields.weight || !fields.observ}
-                  aria-disabled={!fields.bp || !fields.weight || !fields.observ}
+                  disabled={!fields.bp || !fields.weight || !fields.observ || isSaving}
+                  aria-disabled={!fields.bp || !fields.weight || !fields.observ || isSaving}
                   onClick={saveEvaluation}
                 >
-                  Guardar evaluación
+                  {isSaving ? "Guardando..." : "Guardar evaluación"}
                 </button>
               </form>
 

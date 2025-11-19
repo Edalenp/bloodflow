@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import "./donations.css";
+import { createDonation, getPendingDonations } from "../../lib/donations";
 
 export default function DonationsPage() {
   const [openModal, setOpenModal] = useState(false);
@@ -13,6 +14,7 @@ export default function DonationsPage() {
     observ: "",
   });
   const [errors, setErrors] = useState({});
+  /*
   const [donationsPending, setDonationsPending] = useState([
     {
       id: "appt_203",
@@ -31,6 +33,10 @@ export default function DonationsPage() {
       apto: true,
     },
   ]);
+  */
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState("");
 
   const [showSuccess, setShowSuccess] = useState(false);
   const modalRef = useRef(null);
@@ -50,6 +56,24 @@ export default function DonationsPage() {
     setOpenModal(false);
     setSelectedAppt(null);
   };
+
+  useEffect(() => {
+    const fetchPendingDonations = async () => {
+      try {
+        setIsLoading(true);
+        const data = await getPendingDonations();
+        setDonationsPending(data || []);
+        setError("");
+      } catch (err) {
+        console.error("Error loading donations:", err);
+        setError("Error al cargar las donaciones. Intenta nuevamente.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPendingDonations();
+  }, []);
 
   // ACCESSIBILITY: ESC close
   useEffect(() => {
@@ -80,19 +104,39 @@ export default function DonationsPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const saveDonation = (e) => {
+  const saveDonation = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    // Remove the completed donation
-    setDonationsPending((prev) => prev.filter((d) => d.id !== selectedAppt.id));
+    setIsSaving(true);
+    setError("");
 
-    closeDonationModal();
-    setShowSuccess(true);
+    try {
+      const donationData = {
+        appointment_id: selectedAppt.id,
+        volume_ml: parseInt(formData.volume),
+        blood_type: formData.bloodType,
+        observations: formData.observ,
+        // bag_id es opcional, el backend lo genera si no se envía
+      };
 
-    setTimeout(() => {
-      setShowSuccess(false);
-    }, 2000);
+      await createDonation(donationData);
+
+      // Remover de la lista local
+      setDonationsPending((prev) => prev.filter((d) => d.id !== selectedAppt.id));
+
+      closeDonationModal();
+      setShowSuccess(true);
+
+      setTimeout(() => {
+        setShowSuccess(false);
+      }, 2000);
+    } catch (err) {
+      console.error("Error saving donation:", err);
+      setError(err.message || "Error al registrar la donación. Intenta nuevamente.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -111,6 +155,17 @@ export default function DonationsPage() {
             banco.
           </p>
         </header>
+        {error && (
+          <div className="error-banner" role="alert">
+            {error}
+          </div>
+        )}
+
+        {isLoading && (
+          <div className="loading-state">
+            Cargando donaciones pendientes...
+          </div>
+        )}
 
         <section className="donations-list" aria-label="Donaciones pendientes">
           {donationsPending.length === 0 && (
@@ -253,8 +308,12 @@ export default function DonationsPage() {
                   )}
                 </div>
 
-                <button className="submit-donation" type="submit">
-                  Guardar registro
+                <button 
+                  className="submit-donation" 
+                  type="submit"
+                  disabled={isSaving}
+                >
+                  {isSaving ? "Guardando..." : "Guardar registro"}
                 </button>
               </form>
 

@@ -4,12 +4,17 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import "./campaigns.css";
+import { useEffect } from "react"; 
+import { getAllCampaigns } from "../../lib/campaigns"; 
 
 export default function CampaignsPage() {
   const router = useRouter();
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const [isExiting, setIsExiting] = useState(false);
-
+  const [campaigns, setCampaigns] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+/*
   const campaigns = [
     {
       id: "camp_001",
@@ -96,6 +101,25 @@ export default function CampaignsPage() {
       ],
     },
   ];
+  */
+
+  useEffect(() => {
+    const fetchCampaigns = async () => {
+      try {
+        setIsLoading(true);
+        const data = await getAllCampaigns();
+        setCampaigns(data);
+        setError("");
+      } catch (err) {
+        console.error("Error loading campaigns:", err);
+        setError("Error al cargar las campañas. Intenta nuevamente.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCampaigns();
+  }, []);
 
   const goToAppointments = () => {
     setIsExiting(true);
@@ -112,6 +136,17 @@ export default function CampaignsPage() {
           transition={{ duration: 0.35, ease: "easeInOut" }}
           className="camp-container"
         >
+          {error && (
+            <div className="error-banner" role="alert">
+              {error}
+            </div>
+          )}
+
+          {isLoading && (
+            <div className="loading-state">
+              Cargando campañas...
+            </div>
+          )}
           <div className="camp-header">
             <h1>Campañas Activas</h1>
             <p>Encuentra campañas disponibles y elige un horario para donar.</p>

@@ -19,6 +19,37 @@
   animation: fadeInTitle 0.6s ease both;
 }
 
+.error-text {
+  color: #c33;
+  font-size: 13px;
+  margin-top: 4px;
+  display: block;
+}
+
+.send-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.status-message.error {
+  background-color: #fee;
+  border-color: #fcc;
+  color: #c33;
+}
+
+.status-message.success {
+  background-color: #efe;
+  border-color: #cfc;
+  color: #3c3;
+}
+
 @keyframes fadeInTitle {
   from {
     opacity: 0;

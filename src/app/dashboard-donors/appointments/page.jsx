@@ -3,11 +3,21 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import "./appointments.css";
+import { useEffect } from "react";
+import { getMyAppointments, createAppointment } from "../../lib/appointments";
+import { getAllCampaigns } from "../../lib/campaigns";
+import { getCurrentUser } from "../../lib/auth"; 
 
 export default function AppointmentsPage() {
   const [selectedCampaign, setSelectedCampaign] = useState("");
   const [selectedSlot, setSelectedSlot] = useState("");
+  const [appointments, setAppointments] = useState([]);
+  const [campaigns, setCampaigns] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isScheduling, setIsScheduling] = useState(false);
+  const [error, setError] = useState("");
 
+  /*
   const appointments = [
     {
       id: "appt_203",
@@ -57,12 +67,73 @@ export default function AppointmentsPage() {
       slots: ["2025-11-20T09:00:00Z", "2025-11-20T11:00:00Z"],
     },
   ];
+  */
 
-  const handleSchedule = (e) => {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const [appointmentsData, campaignsData] = await Promise.all([
+          getMyAppointments(),
+          getAllCampaigns(),
+        ]);
+        
+        setAppointments(appointmentsData.data || []);
+        setCampaigns(campaignsData || []);
+        setError("");
+      } catch (err) {
+        console.error("Error loading data:", err);
+        setError("Error al cargar la información. Intenta nuevamente.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleSchedule = async (e) => {
     e.preventDefault();
-    alert("Cita agendada (simulado)");
-    setSelectedCampaign("");
-    setSelectedSlot("");
+    setError("");
+    setIsScheduling(true);
+
+    try {
+      const user = getCurrentUser();
+      
+      if (!user || !user.id) {
+        setError("Debes iniciar sesión para agendar una cita.");
+        setIsScheduling(false);
+        return;
+      }
+
+      // Nota: Necesitas el donor_id, no el user_id
+      // Esto requeriría una llamada adicional o tenerlo en el localStorage
+      // Por ahora usaremos user.id, pero puede que necesites ajustar esto
+      const appointmentData = {
+        donor_id: user.id, // Puede necesitar ser el donor_id específico
+        campaign_id: selectedCampaign,
+        slot_datetime: selectedSlot,
+      };
+
+      await createAppointment(appointmentData);
+      
+      // Recargar las citas después de crear una nueva
+      const updatedAppointments = await getMyAppointments();
+      setAppointments(updatedAppointments.data || []);
+      
+      // Limpiar formulario
+      setSelectedCampaign("");
+      setSelectedSlot("");
+      
+      // Mostrar mensaje de éxito
+      alert("¡Cita agendada exitosamente!");
+      
+    } catch (err) {
+      console.error("Error scheduling appointment:", err);
+      setError(err.message || "Error al agendar la cita. Intenta nuevamente.");
+    } finally {
+      setIsScheduling(false);
+    }
   };
 
   return (
@@ -80,6 +151,18 @@ export default function AppointmentsPage() {
           </p>
         </div>
       </header>
+
+      {error && (
+        <div className="error-banner" role="alert">
+          {error}
+        </div>
+      )}
+
+      {isLoading && (
+        <div className="loading-state">
+          Cargando información...
+        </div>
+      )}
 
       <section className="content-grid">
         <motion.section
@@ -188,7 +271,7 @@ export default function AppointmentsPage() {
               aria-disabled={!selectedCampaign || !selectedSlot}
               disabled={!selectedCampaign || !selectedSlot}
             >
-              Reservar Cita
+              {isScheduling ? "Agendando..." : "Reservar Cita"}
             </button>
           </form>
         </motion.section>
