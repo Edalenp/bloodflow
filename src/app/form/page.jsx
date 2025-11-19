@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { loginUser, registerUser } from "../lib/auth";
 import "./form.css";
 
 export default function FormPage() {
@@ -14,6 +15,10 @@ export default function FormPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordMatch, setPasswordMatch] = useState(true);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [showRoleError, setShowRoleError] = useState(false);
+  const [suggestedUserType, setSuggestedUserType] = useState(null);
 
   const birthDateRef = useRef(null);
   const confirmPasswordRef = useRef(null);
@@ -26,6 +31,7 @@ export default function FormPage() {
     setPassword("");
     setConfirmPassword("");
     setPasswordMatch(true);
+    setError("");
   };
 
   const handlePasswordChange = (e) => {
@@ -48,28 +54,78 @@ export default function FormPage() {
     return birth > today;
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    const email = e.target.email.value
-      .trim()
-      .toLowerCase()
-      .split("@")[1]
-      .split(".")[0];
-    console.log(email);
-    const isMedical = email.includes("med") || email.includes("hospital");
-    const isAdmin = email.includes("admin");
+    setError("");
+    setShowRoleError(false);
+    setIsLoading(true);
 
-    if (isMedical) {
-      router.push("/dashboard-medical");
-    } else if (isAdmin) {
-      router.push("/dashboard-admin");
-    } else {
-      router.push("/dashboard-donors");
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+
+    try {
+      const response = await loginUser(email, password);
+
+      // Validar que el rol coincida con el tipo de acceso seleccionado
+      const userRole = response.user.role;
+      console.log(response.user.role)
+
+      if (userType === "donor") {
+        // El usuario seleccionó acceso de DONANTE
+        if (userRole !== "donor") {
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
+          localStorage.removeItem('user');
+          setError("Esta cuenta no es de donante. Usa el acceso de Personal Médico.");
+          setSuggestedUserType("staff");
+          setShowRoleError(true);
+          setIsLoading(false);
+          return;
+        }
+        router.push("/dashboard-donors");
+
+      } else if (userType === "staff") {
+        // El usuario seleccionó acceso de PERSONAL MÉDICO
+        if (userRole !== "medical_staff" && userRole !== "admin") {
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
+          localStorage.removeItem('user');
+          setError("Esta cuenta es de donante. Usa el acceso de Donante.");
+          setSuggestedUserType("donor");
+          setShowRoleError(true);
+          setIsLoading(false);
+          return;
+        }
+
+        // Redirigir según el rol específico del usuario
+        if (userRole === "admin") {
+          router.push("/dashboard-admin");
+        } else {
+          router.push("/dashboard-medical");
+        }
+      }
+    } catch (err) {
+      setError(err.message || "Error al iniciar sesión. Verifica tus credenciales.");
+      console.error("Login error:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleRegister = (e) => {
+  const handleSwitchUserType = () => {
+    setExitAnimation(true);
+    setTimeout(() => {
+      setUserType(suggestedUserType);
+      setShowRoleError(false);
+      setSuggestedUserType(null);
+      setError("");
+      setExitAnimation(false);
+    }, 350);
+  };
+
+  const handleRegister = async (e) => {
     e.preventDefault();
+    setError("");
 
     if (!passwordMatch) {
       confirmPasswordRef.current?.focus();
@@ -86,12 +142,34 @@ export default function FormPage() {
       pRef.current.textContent = "";
     }
 
-    setShowSuccessModal(true);
+    setIsLoading(true);
 
-    setTimeout(() => {
-      setShowSuccessModal(false);
-      toggleForm();
-    }, 2000);
+    const userData = {
+      fullName: e.target.full_name.value,
+      email: e.target.email.value,
+      password: password,
+      documentType: e.target.document_type.value,
+      documentNumber: e.target.document_number.value,
+      birthDate: birthDate,
+      phone: e.target.phone.value,
+      bloodType: e.target.blood_type.value,
+    };
+
+    try {
+      await registerUser(userData);
+      
+      setShowSuccessModal(true);
+
+      setTimeout(() => {
+        setShowSuccessModal(false);
+        toggleForm();
+      }, 2000);
+    } catch (err) {
+      setError(err.message || "Error al registrar. Intenta nuevamente.");
+      console.error("Register error:", err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const formVariants = {
@@ -179,6 +257,21 @@ export default function FormPage() {
               {isRegister ? "Crear cuenta" : "Iniciar sesión"}
             </h1>
 
+            {error && (
+            <div className="error-banner" role="alert">
+              {error}
+              {showRoleError && suggestedUserType && (
+                <button
+                  type="button"
+                  className="switch-access-button"
+                  onClick={handleSwitchUserType}
+                >
+                  Cambiar a {suggestedUserType === "donor" ? "Donante" : "Personal Médico"}
+                </button>
+              )}
+            </div>
+          )}
+
             <AnimatePresence mode="wait">
               {!isRegister ? (
                 <motion.form
@@ -198,6 +291,8 @@ export default function FormPage() {
                       type="email"
                       id="email"
                       name="email"
+                      required
+                      disabled={isLoading}
                       aria-required="true"
                       autoComplete="email"
                       aria-label="Correo electrónico"
@@ -212,6 +307,7 @@ export default function FormPage() {
                       id="password"
                       name="password"
                       required
+                      disabled={isLoading}
                       aria-required="true"
                       aria-label="Contraseña"
                       placeholder="••••••••"
@@ -225,9 +321,10 @@ export default function FormPage() {
                         ? "form-button"
                         : "form-button-medical"
                     }
+                    disabled={isLoading}
                     aria-label="Ingresar"
                   >
-                    Ingresar
+                    {isLoading ? "Ingresando..." : "Ingresar"}
                   </button>
 
                   {userType === "staff" ? null : (
@@ -260,7 +357,9 @@ export default function FormPage() {
                     <input
                       type="text"
                       id="full_name"
+                      name="full_name"
                       required
+                      disabled={isLoading}
                       autoComplete="name"
                       aria-required="true"
                       placeholder="Juan Pérez"
@@ -272,7 +371,9 @@ export default function FormPage() {
                     <input
                       type="email"
                       id="email"
+                      name="email"
                       required
+                      disabled={isLoading}
                       autoComplete="email"
                       aria-required="true"
                       placeholder="juan@gmail.com"
@@ -284,9 +385,11 @@ export default function FormPage() {
                     <input
                       type="password"
                       id="password"
+                      name="password"
                       value={password}
                       onChange={handlePasswordChange}
                       required
+                      disabled={isLoading}
                       aria-required="true"
                       aria-invalid={!passwordMatch}
                       placeholder="P@ssw0rd123"
@@ -301,10 +404,12 @@ export default function FormPage() {
                       className={!passwordMatch ? "error" : ""}
                       type="password"
                       id="confirm_password"
+                      name="confirm_password"
                       value={confirmPassword}
                       ref={confirmPasswordRef}
                       onChange={handleConfirmChange}
                       required
+                      disabled={isLoading}
                       aria-required="true"
                       aria-invalid={!passwordMatch}
                       placeholder="Repite tu contraseña"
@@ -318,7 +423,13 @@ export default function FormPage() {
 
                   <div className="input-group">
                     <label htmlFor="document_type">Tipo de documento</label>
-                    <select id="document_type" required aria-required="true">
+                    <select 
+                      id="document_type" 
+                      name="document_type"
+                      required 
+                      disabled={isLoading}
+                      aria-required="true"
+                    >
                       <option value="">Seleccione</option>
                       <option value="CC">Cédula de ciudadanía</option>
                       <option value="TI">Tarjeta de identidad</option>
@@ -331,7 +442,9 @@ export default function FormPage() {
                     <input
                       type="text"
                       id="document_number"
+                      name="document_number"
                       required
+                      disabled={isLoading}
                       aria-required="true"
                       placeholder="1029384756"
                     />
@@ -342,11 +455,12 @@ export default function FormPage() {
                     <input
                       type="date"
                       id="birth_date"
+                      name="birth_date"
                       required
+                      disabled={isLoading}
                       aria-required="true"
                       ref={birthDateRef}
                     />
-
                     <p ref={pRef} className="error-text"></p>
                   </div>
 
@@ -355,7 +469,9 @@ export default function FormPage() {
                     <input
                       type="tel"
                       id="phone"
+                      name="phone"
                       required
+                      disabled={isLoading}
                       autoComplete="phone"
                       aria-required="true"
                       placeholder="3001234567"
@@ -364,7 +480,13 @@ export default function FormPage() {
 
                   <div className="input-group">
                     <label htmlFor="blood_type">Tipo de sangre</label>
-                    <select id="blood_type" required aria-required="true">
+                    <select 
+                      id="blood_type" 
+                      name="blood_type"
+                      required 
+                      disabled={isLoading}
+                      aria-required="true"
+                    >
                       <option value="">Seleccione</option>
                       <option value="O+">O+</option>
                       <option value="O-">O-</option>
@@ -377,8 +499,12 @@ export default function FormPage() {
                     </select>
                   </div>
 
-                  <button type="submit" className="form-button">
-                    Registrarme
+                  <button 
+                    type="submit" 
+                    className="form-button"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? "Registrando..." : "Registrarme"}
                   </button>
 
                   <p className="form-footer">
@@ -407,6 +533,7 @@ export default function FormPage() {
                   setUserType(null);
                   setIsRegister(false);
                   setExitAnimation(false);
+                  setError("");
                 }, 350);
               }}
               aria-label="Volver a seleccionar el rol"
