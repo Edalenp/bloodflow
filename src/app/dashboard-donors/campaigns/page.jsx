@@ -212,14 +212,20 @@ export default function CampaignsPage() {
                 <h3 className="panel-subtitle">Horarios disponibles</h3>
 
                 <div className="slot-list">
-                  {selectedCampaign.slots.map((slot, i) => (
-                    <div
-                      key={i}
-                      className={`slot ${slot.available ? "free" : "taken"}`}
-                    >
-                      {new Date(slot.slot_datetime).toLocaleString("es-ES")}
+                  {selectedCampaign.slots && selectedCampaign.slots.length > 0 ? (
+                    selectedCampaign.slots.map((slot, i) => (
+                      <div
+                        key={i}
+                        className={`slot ${slot.available ? "free" : "taken"}`}
+                      >
+                        {new Date(slot.slot_datetime).toLocaleString("es-ES")}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="slot empty">
+                      No hay horarios disponibles para esta campaña.
                     </div>
-                  ))}
+                  )}
                 </div>
 
                 <button

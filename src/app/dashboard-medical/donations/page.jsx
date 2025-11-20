@@ -14,32 +14,33 @@ export default function DonationsPage() {
     observ: "",
   });
   const [errors, setErrors] = useState({});
-  /*
-  const [donationsPending, setDonationsPending] = useState([
-    {
-      id: "appt_203",
-      donor: "Juan Pérez",
-      blood_type: "O+",
-      campaign: "Jornada de Donación UdeC",
-      datetime: "2025-11-15T09:00:00Z",
-      apto: true,
-    },
-    {
-      id: "appt_208",
-      donor: "Laura Gómez",
-      blood_type: "A+",
-      campaign: "Donación Clínica La María",
-      datetime: "2025-11-22T10:30:00Z",
-      apto: true,
-    },
-  ]);
-  */
+  const [donationsPending, setDonationsPending] = useState([]);
+  const [showSuccess, setShowSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
-
-  const [showSuccess, setShowSuccess] = useState(false);
+  
   const modalRef = useRef(null);
+
+  // Cargar donaciones pendientes desde el backend
+  useEffect(() => {
+    const fetchPendingDonations = async () => {
+      try {
+        setIsLoading(true);
+        const data = await getPendingDonations();
+        setDonationsPending(data || []);
+        setError("");
+      } catch (err) {
+        console.error("Error loading donations:", err);
+        setError(err.message || "Error al cargar las donaciones. Intenta nuevamente.");
+        setDonationsPending([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPendingDonations();
+  }, []);
 
   const openDonationModal = (appt) => {
     setSelectedAppt(appt);
@@ -56,24 +57,6 @@ export default function DonationsPage() {
     setOpenModal(false);
     setSelectedAppt(null);
   };
-
-  useEffect(() => {
-    const fetchPendingDonations = async () => {
-      try {
-        setIsLoading(true);
-        const data = await getPendingDonations();
-        setDonationsPending(data || []);
-        setError("");
-      } catch (err) {
-        console.error("Error loading donations:", err);
-        setError("Error al cargar las donaciones. Intenta nuevamente.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchPendingDonations();
-  }, []);
 
   // ACCESSIBILITY: ESC close
   useEffect(() => {
@@ -113,11 +96,10 @@ export default function DonationsPage() {
 
     try {
       const donationData = {
-        appointment_id: selectedAppt.id,
+        appointment_id: selectedAppt.id, // UUID de la cita seleccionada
         volume_ml: parseInt(formData.volume),
         blood_type: formData.bloodType,
         observations: formData.observ,
-        // bag_id es opcional, el backend lo genera si no se envía
       };
 
       await createDonation(donationData);
@@ -155,6 +137,7 @@ export default function DonationsPage() {
             banco.
           </p>
         </header>
+        
         {error && (
           <div className="error-banner" role="alert">
             {error}
@@ -168,7 +151,7 @@ export default function DonationsPage() {
         )}
 
         <section className="donations-list" aria-label="Donaciones pendientes">
-          {donationsPending.length === 0 && (
+          {!isLoading && donationsPending.length === 0 && (
             <div className="no-donations" role="status" aria-live="polite">
               <div className="no-donations-icon">🩸</div>
               <h3>No hay donaciones pendientes</h3>
@@ -265,6 +248,7 @@ export default function DonationsPage() {
                     onChange={(e) => handleChange("volume", e.target.value)}
                     aria-invalid={!!errors.volume}
                     aria-describedby={errors.volume ? "err-volume" : undefined}
+                    placeholder="450"
                   />
                   {errors.volume && (
                     <p className="error-text" id="err-volume">
@@ -284,6 +268,7 @@ export default function DonationsPage() {
                     aria-describedby={
                       errors.bloodType ? "err-blood" : undefined
                     }
+                    readOnly
                   />
                   {errors.bloodType && (
                     <p className="error-text" id="err-blood">
@@ -300,6 +285,8 @@ export default function DonationsPage() {
                     onChange={(e) => handleChange("observ", e.target.value)}
                     aria-invalid={!!errors.observ}
                     aria-describedby={errors.observ ? "err-observ" : undefined}
+                    placeholder="Ingrese observaciones sobre la donación..."
+                    rows="4"
                   ></textarea>
                   {errors.observ && (
                     <p className="error-text" id="err-observ">

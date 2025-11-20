@@ -13,6 +13,8 @@ export default function MedicalChecksPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
 
+  const [appointments, setAppointments] = useState([]);
+
   const [fields, setFields] = useState({
     bp: "",
     weight: "",
@@ -53,6 +55,7 @@ export default function MedicalChecksPage() {
       } catch (err) {
         console.error("Error loading appointments:", err);
         setError("Error al cargar las citas. Intenta nuevamente.");
+        setAppointments([]);
       } finally {
         setIsLoading(false);
       }

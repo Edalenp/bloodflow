@@ -254,14 +254,17 @@ export default function AppointmentsPage() {
                 disabled={!selectedCampaign}
               >
                 <option value="">Selecciona un horario</option>
-                {selectedCampaign &&
-                  campaigns
-                    .find((c) => c.id === selectedCampaign)
-                    .slots.map((slot, i) => (
-                      <option key={i} value={slot}>
-                        {new Date(slot).toLocaleString("es-ES")}
-                      </option>
-                    ))}
+                {selectedCampaign && (() => {
+                  const campaign = campaigns.find((c) => c.id === selectedCampaign);
+                  if (!campaign || !campaign.slots || campaign.slots.length === 0) {
+                    return <option value="" disabled>No hay horarios disponibles</option>;
+                  }
+                  return campaign.slots.map((slot, i) => (
+                    <option key={i} value={slot}>
+                      {new Date(slot).toLocaleString("es-ES")}
+                    </option>
+                  ));
+                })()}
               </select>
             </div>
 

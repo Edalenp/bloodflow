@@ -52,7 +52,20 @@ export default function InventoryPage() {
         const response = await getInventory();
 
         if (isMounted) {
-          setInventoryData(response.data || []);
+          // Filtrar duplicados agrupando por blood_type
+          const uniqueInventory = response.data.reduce((acc, item) => {
+            const existing = acc.find(i => i.blood_type === item.blood_type);
+            if (existing) {
+              // Si ya existe, sumar las unidades
+              existing.units_available += item.units_available;
+            } else {
+              // Si no existe, agregarlo
+              acc.push({ ...item });
+            }
+            return acc;
+          }, []);
+
+          setInventoryData(uniqueInventory);
           setLastUpdated(response.last_updated);
           setError("");
         }
