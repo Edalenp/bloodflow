@@ -110,20 +110,19 @@ export const getPendingDonations = async (req, res) => {
     if (!user || user.role !== 'medical_staff') {
       return res.status(403).json({ message: 'Insufficient permissions' });
     }
-
     const pool = await poolPromise;
-
     const appts = await pool.request()
       .query(`
         SELECT 
           a.id,
           a.slot_datetime as datetime,
           a.status,
-          d.full_name as donor,
+          u.full_name as donor,
           d.blood_type,
           c.title as campaign
         FROM appointments a
         INNER JOIN donors d ON a.donor_id = d.id
+        INNER JOIN users u ON d.user_id = u.id
         INNER JOIN campaigns c ON a.campaign_id = c.id
         INNER JOIN medical_checks mc ON mc.appointment_id = a.id
         WHERE a.eligibility_checked = 1
@@ -131,7 +130,6 @@ export const getPendingDonations = async (req, res) => {
           AND a.status = 'scheduled'
         ORDER BY a.slot_datetime ASC
       `);
-
     return res.status(200).json(appts.recordset);
   } catch (err) {
     console.error('getPendingDonations error:', err);
